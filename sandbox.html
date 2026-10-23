@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Flow 沙箱 · AssistBox</title>
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
+<style>
+#sandbox { display:flex; flex-direction:column; gap:10px; max-width:720px; margin:24px auto; padding:0 16px; }
+#sandbox select,#sandbox input,#sandbox textarea,#sandbox button { background:#14161c; border:1px solid #2a2f3a; border-radius:10px; color:#e7e9ee; padding:9px 12px; font-size:13px; }
+#sandbox textarea { min-height:120px; font-family:ui-monospace,monospace; resize:vertical; }
+#out { white-space:pre-wrap; font-family:ui-monospace,monospace; font-size:12px; color:#9be29b; background:#0d0f14; border:1px solid #2a2f3a; border-radius:10px; padding:12px; min-height:60px; }
+.cell { background:rgba(0,0,0,.24); border:1px solid rgba(255,255,255,.16); border-radius:22px; padding:14px 16px; display:flex; flex-direction:column; gap:4px; }
+.cell h3 { margin:0; font-size:14px; color:#fff; } .cell .sum { font-size:13px; color:#fff; }
+.cell .extra { font-size:12px; color:rgba(255,255,255,.5); } .cell .st { font-size:11px; color:#7dd3fc; }
+.cell ul { margin:4px 0 0; padding-left:16px; font-size:12px; color:rgba(255,255,255,.75); }
+.note { font-size:11px; color:rgba(255,255,255,.4); }
+</style></head>
+<body>
+<div id="sandbox">
+  <h2>Flow 沙箱<span class="note">（浏览器模拟 ct — 预览不等同真机）</span></h2>
+  <select id="flow"></select>
+  <select id="entry"></select>
+  <input id="argpath" placeholder="args JSON（空默认 manifest 首部值）" />
+  <button id="run">运行 js + 渲染 view</button>
+  <div id="viewcell"></div>
+  <div id="out">…</div>
+</div>
+<script src="sandbox.js"></script>
+</body></html>
