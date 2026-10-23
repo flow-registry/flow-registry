@@ -28,6 +28,7 @@ jobs:
             id=$(basename "$dir")
             (cd "$dir" && zip -qr "$OLDPWD/dist/$id.flow" .)
           done
+          node .github/scripts/build-dist-index.mjs
           ls -l dist/
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

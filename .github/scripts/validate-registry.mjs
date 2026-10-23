@@ -24,6 +24,18 @@ if (!Array.isArray(entries)) {
     if (e.path && /(^\/|\.\.|\/$)/.test(e.path))
       errors.push(`${where}: bad path "${e.path}"`);
     if (e.tags && !Array.isArray(e.tags)) errors.push(`${where}: tags must be an array`);
+    for (const k of ["version", "minApp"]) {
+      if (e[k] !== undefined && !/^\d+\.\d+\.\d+$/.test(e[k]))
+        errors.push(`${where}: ${k} "${e[k]}" must be semver x.y.z`);
+    }
+    if (e.distUrl !== undefined && !/^https:\/\/\S+$/.test(e.distUrl))
+      errors.push(`${where}: distUrl must be an https URL`);
+    if (e.capabilities !== undefined &&
+        (!Array.isArray(e.capabilities) ||
+          !e.capabilities.every((c) => /^[a-z_][a-z0-9_.]*$/.test(c))))
+      errors.push(`${where}: capabilities must be a tool-name list`);
+    if (e.seed !== undefined && typeof e.seed !== "boolean")
+      errors.push(`${where}: seed must be boolean`);
   }
 }
 

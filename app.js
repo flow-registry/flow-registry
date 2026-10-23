@@ -125,7 +125,9 @@ async function openDetail(flow) {
       <tr><td>步骤</td><td>${steps.length} 步<br><code>${stepNames}</code></td></tr>
       <tr><td>策略</td><td><code>onStepError=${manifest.context?.onStepError ?? "—"}</code>
         <code>maxFires=${manifest.context?.maxFires ?? "—"}</code></td></tr>
-      <tr><td>安装</td><td>目录打包为 <code>.flow</code> zip，放入 workspace 后
+      <tr><td>版本</td><td>${flow.version ?? "—"}${flow.minApp ? ` · 要求 app ≥ ${flow.minApp}` : ""}</td></tr>
+      ${flow.capabilities?.length ? `<tr><td>能力</td><td>${flow.capabilities.map((c) => `<code>${c}</code>`).join(" ")}</td></tr>` : ""}
+      <tr><td>安装</td><td>${flow.distUrl ? `<a href="${flow.distUrl}" target="_blank" rel="noopener">下载 .flow</a>，` : ""}放入 workspace 后
         <code>flow.import {"path":"<file>.flow"}</code>，或直接让 Agent 导入。</td></tr>
     </table>`;
   } catch (e) {
