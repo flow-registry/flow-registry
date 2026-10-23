@@ -10,7 +10,7 @@
     "capabilities": ["net.fetch", "fs.read", "script.eval"],
     "repo": "qedmi/assistbox-flows",
     "path": "flows/spcx-quotes",
-    "distUrl": "https://qedmi.github.io/assistbox-flows/dist/spcx-quotes.flow",
+    "distUrl": "https://github.com/qedmi/assistbox-flows/releases/download/dist/spcx-quotes.flow",
     "seed": true
   },
   {
@@ -24,7 +24,7 @@
     "capabilities": ["net.fetch", "fs.read", "script.eval"],
     "repo": "qedmi/assistbox-flows",
     "path": "flows/weather-shanghai",
-    "distUrl": "https://qedmi.github.io/assistbox-flows/dist/weather-shanghai.flow",
+    "distUrl": "https://github.com/qedmi/assistbox-flows/releases/download/dist/weather-shanghai.flow",
     "seed": true
   },
   {
@@ -38,7 +38,7 @@
     "capabilities": ["net.fetch", "fs.read", "storage.kv", "script.eval"],
     "repo": "qedmi/assistbox-flows",
     "path": "flows/proxy-subscription",
-    "distUrl": "https://qedmi.github.io/assistbox-flows/dist/proxy-subscription.flow",
+    "distUrl": "https://github.com/qedmi/assistbox-flows/releases/download/dist/proxy-subscription.flow",
     "seed": true
   }
 ]
