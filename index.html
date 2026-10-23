@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AssistBox Flows — 社区 Flow 目录</title>
+<meta name="description" content="AssistBox 社区 .flow 包目录：可搜索的自动化工作流列表。">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+<script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js" defer></script>
+<script src="app.js" defer></script>
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <a class="brand" href="#">⚡ AssistBox <span>Flows</span></a>
+    <div class="searchbox">
+      <svg class="search-icon" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="7" cy="7" r="5"/><path d="m11 11 4 4"/></svg>
+      <input id="search" type="search" placeholder="搜索 flow…" autocomplete="off" spellcheck="false">
+      <kbd>⌘K</kbd>
+    </div>
+    <a class="submit-link" href="https://github.com/qedmi/flow-list/issues/new?template=submit-flow.md" target="_blank" rel="noopener">提交 flow</a>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="meta-line">
+    <span id="count"></span>
+    <span class="sort">
+      排序：
+      <button class="sort-btn active" data-sort="name">名称</button>
+      <button class="sort-btn" data-sort="author">作者</button>
+    </span>
+  </div>
+  <div id="grid" class="grid" role="list"></div>
+  <p id="empty" class="empty" hidden>没有匹配的 flow。</p>
+</main>
+
+<div id="detail-backdrop" class="backdrop" hidden>
+  <article id="detail" class="detail" role="dialog" aria-modal="true">
+    <header class="detail-head">
+      <div>
+        <h2 id="d-name"></h2>
+        <p id="d-meta" class="d-meta"></p>
+      </div>
+      <button id="d-close" class="d-close" aria-label="关闭">✕</button>
+    </header>
+    <div id="d-tags" class="d-tags"></div>
+    <div id="d-manifest" class="d-manifest"></div>
+    <div id="d-readme" class="d-readme"></div>
+    <footer class="detail-foot">
+      <a id="d-source" target="_blank" rel="noopener">查看源码 ↗</a>
+    </footer>
+  </article>
+</div>
+
+<footer class="foot">
+  <div class="wrap">社区提交的 .flow 包 · <a href="https://github.com/qedmi/flow-list" target="_blank" rel="noopener">qedmi/flow-list</a></div>
+</footer>
+</body>
+</html>
