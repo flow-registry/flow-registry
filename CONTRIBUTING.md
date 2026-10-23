@@ -12,7 +12,7 @@
   "author": "你的名字",
   "description": "一句话说明（卡片上最多三行）",
   "tags": ["标签"],
-  "repo": "qedmi/flow-registry",
+  "repo": "qedmi/assistbox-flows",
   "path": "flows/my-flow"
 }
 ```

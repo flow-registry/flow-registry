@@ -8,9 +8,9 @@
     "minApp": "1.4.0",
     "tags": ["行情", "量化", "demo"],
     "capabilities": ["net.fetch", "fs.read", "script.eval"],
-    "repo": "qedmi/flow-registry",
+    "repo": "qedmi/assistbox-flows",
     "path": "flows/spcx-quotes",
-    "distUrl": "https://qedmi.github.io/flow-registry/dist/spcx-quotes.flow",
+    "distUrl": "https://qedmi.github.io/assistbox-flows/dist/spcx-quotes.flow",
     "seed": true
   },
   {
@@ -22,9 +22,9 @@
     "minApp": "1.4.0",
     "tags": ["天气", "signal", "demo"],
     "capabilities": ["net.fetch", "fs.read", "script.eval"],
-    "repo": "qedmi/flow-registry",
+    "repo": "qedmi/assistbox-flows",
     "path": "flows/weather-shanghai",
-    "distUrl": "https://qedmi.github.io/flow-registry/dist/weather-shanghai.flow",
+    "distUrl": "https://qedmi.github.io/assistbox-flows/dist/weather-shanghai.flow",
     "seed": true
   },
   {
@@ -36,9 +36,9 @@
     "minApp": "1.4.0",
     "tags": ["网络", "proxy", "工具"],
     "capabilities": ["net.fetch", "fs.read", "storage.kv", "script.eval"],
-    "repo": "qedmi/flow-registry",
+    "repo": "qedmi/assistbox-flows",
     "path": "flows/proxy-subscription",
-    "distUrl": "https://qedmi.github.io/flow-registry/dist/proxy-subscription.flow",
+    "distUrl": "https://qedmi.github.io/assistbox-flows/dist/proxy-subscription.flow",
     "seed": true
   }
 ]
