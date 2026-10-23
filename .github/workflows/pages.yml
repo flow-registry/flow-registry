@@ -21,6 +21,14 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      - name: Build .flow packages
+        run: |
+          mkdir -p dist
+          for dir in flows/*/; do
+            id=$(basename "$dir")
+            (cd "$dir" && zip -qr "$OLDPWD/dist/$id.flow" .)
+          done
+          ls -l dist/
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
