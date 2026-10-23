@@ -11,7 +11,7 @@ const errors = [];
 for (const entry of registry) {
   // Only flows hosted in this repo are filesystem-checked; external repos are
   // the entry author's responsibility.
-  if (entry.repo !== "qedmi/flow-list" || !entry.path) continue;
+  if (entry.repo !== "qedmi/flow-registry" || !entry.path) continue;
   const dir = entry.path;
   const manifestPath = join(dir, "manifest.yaml");
   if (!existsSync(manifestPath)) {

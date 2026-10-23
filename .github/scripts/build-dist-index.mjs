@@ -7,7 +7,7 @@ import { join } from "node:path";
 // hashes. Consumers verify a .flow against sha256 before importing.
 const ROOT = new URL("../../", import.meta.url).pathname;
 const DIST = join(ROOT, "dist");
-const BASE = "https://qedmi.github.io/flow-list/dist";
+const BASE = "https://qedmi.github.io/flow-registry/dist";
 const packages = {};
 for (const file of readdirSync(DIST).filter((f) => f.endsWith(".flow")).sort()) {
   const bytes = readFileSync(join(DIST, file));
