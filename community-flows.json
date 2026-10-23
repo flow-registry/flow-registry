@@ -4,26 +4,41 @@
     "name": "SPCX 行情",
     "author": "assistbox",
     "description": "SpaceX（usSPCX.OQ）腾讯行情：5 分钟一刷，收盘/涨跌/盘后价 + 12 日 sparkline + Plotly 折线 + 快讯列表。",
-    "tags": ["行情", "量化", "demo"],
+    "tags": [
+      "行情",
+      "量化",
+      "demo"
+    ],
     "repo": "qedmi/flow-list",
-    "path": "flows/spcx-quotes"
+    "path": "flows/spcx-quotes",
+    "seed": true
   },
   {
     "id": "weather-shanghai",
     "name": "上海天气",
     "author": "assistbox",
     "description": "腾讯 wis.qq.com 实况 + 8 日预报，10 分钟一刷；落定后 emit `weather.updated` 信号，可作 `on:` 触发源。",
-    "tags": ["天气", "signal", "demo"],
+    "tags": [
+      "天气",
+      "signal",
+      "demo"
+    ],
     "repo": "qedmi/flow-list",
-    "path": "flows/weather-shanghai"
+    "path": "flows/weather-shanghai",
+    "seed": true
   },
   {
     "id": "proxy-subscription",
     "name": "代理订阅",
     "author": "assistbox",
     "description": "12 小时一刷：拉取 Clash YAML / 分享链接订阅（vmess/vless/trojan/anytls/hy2），解析后经 installNodes intent 交给宿主装节点；URL 在设置页「订阅地址」维护。",
-    "tags": ["网络", "proxy", "工具"],
+    "tags": [
+      "网络",
+      "proxy",
+      "工具"
+    ],
     "repo": "qedmi/flow-list",
-    "path": "flows/proxy-subscription"
+    "path": "flows/proxy-subscription",
+    "seed": true
   }
 ]
