@@ -1,0 +1,20 @@
+name: Validate registry
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm install --no-save js-yaml
+      - name: Validate community-flows.json
+        run: node .github/scripts/validate-registry.mjs
+      - name: Validate hosted flow manifests
+        run: node .github/scripts/validate-flows.mjs

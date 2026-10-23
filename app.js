@@ -116,12 +116,17 @@ async function openDetail(flow) {
   const base = rawBase(flow);
   try {
     const manifest = parseManifest(await fetchText(base + "manifest.yaml"));
-    const steps = Array.isArray(manifest.steps) ? manifest.steps.length : "—";
+    const steps = Array.isArray(manifest.steps) ? manifest.steps : [];
+    const stepNames = steps
+      .map((s) => (s && s.tool ? `tool:${s.tool}` : s && s.js ? `js:${s.js}` : "?"))
+      .join(" → ");
     manifestBox.innerHTML = `<table>
       <tr><td>触发</td><td>${triggerLabel(manifest)}</td></tr>
-      <tr><td>步骤</td><td>${steps} 步</td></tr>
+      <tr><td>步骤</td><td>${steps.length} 步<br><code>${stepNames}</code></td></tr>
       <tr><td>策略</td><td><code>onStepError=${manifest.context?.onStepError ?? "—"}</code>
         <code>maxFires=${manifest.context?.maxFires ?? "—"}</code></td></tr>
+      <tr><td>安装</td><td>目录打包为 <code>.flow</code> zip，放入 workspace 后
+        <code>flow.import {"path":"<file>.flow"}</code>，或直接让 Agent 导入。</td></tr>
     </table>`;
   } catch (e) {
     manifestBox.textContent = "manifest.yaml 读取失败：" + e.message;
