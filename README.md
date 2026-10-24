@@ -19,6 +19,14 @@ flows/<id>/
 └── README.md            # 详情页正文
 ```
 
+## 文档
+
+- [docs/INDEX_SCHEMA.md](docs/INDEX_SCHEMA.md) — `community-flows.json` 的字段表
+- [docs/CLIENT_PROTOCOL.md](docs/CLIENT_PROTOCOL.md) — 客户端拉取/安装协议
+- [docs/MANIFEST.md](docs/MANIFEST.md) — `manifest.yaml` 字段参考
+- [docs/VIEWS.md](docs/VIEWS.md) — `flow.cell.yaml`/`flow.detail.yaml` 视图 schema
+- [docs/SANDBOX.md](docs/SANDBOX.md) — 沙箱页用法和与真机的差异
+
 ## 提交
 
 见 [CONTRIBUTING.md](CONTRIBUTING.md)。
