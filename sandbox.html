@@ -4,37 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Flow 沙箱 · AssistBox Flows</title>
-<meta name="description" content="浏览器内运行 .flow 包的步并预览 cell——模拟 ct ABI。">
+<meta name="description" content="在浏览器里跑已发布的 .flow：按 release tag 读源码，或直接打开 zip。">
 <link rel="stylesheet" href="styles.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
 <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
-<style>
-.sb { max-width:760px; margin:24px auto; display:flex; flex-direction:column; gap:14px; }
-.sb label { display:block; font-size:11px; color:rgba(255,255,255,.5); margin-bottom:4px; }
-.sb select,.sb input,.sb textarea {
-  width:100%; box-sizing:border-box;
-  background:#14161c; border:1px solid #2a2f3a; border-radius:10px;
-  color:#e7e9ee; padding:9px 12px; font-size:13px; font-family:inherit;
-}
-.sb textarea { min-height:64px; font-family:ui-monospace,monospace; resize:vertical; }
-.sb-run { align-self:flex-start; }
-#out {
-  white-space:pre-wrap; font-family:ui-monospace,monospace; font-size:12px;
-  color:#9be29b; background:#0d0f14; border:1px solid #2a2f3a; border-radius:10px;
-  padding:12px; min-height:60px; max-height:280px; overflow-y:auto;
-}
-.cell { background:rgba(0,0,0,.24); border:1px solid rgba(255,255,255,.16); border-radius:22px; padding:14px 16px; display:flex; flex-direction:column; gap:8px; }
-.cell .sum { font-size:13px; color:#fff; }
-.cell .extra { font-size:12px; color:rgba(255,255,255,.5); }
-.cell .st { font-size:11px; color:#7dd3fc; }
-.cell .banner { font-size:13px; }
-.cell .bar { height:4px; background:rgba(255,255,255,.1); border-radius:2px; overflow:hidden; }
-.cell .bar > div { height:100%; background:#7dd3fc; }
-.cell .cellbtn { display:inline-block; font-size:12px; color:#7dd3fc; border:1px solid rgba(125,211,252,.3); border-radius:8px; padding:4px 10px; }
-.sb-note { font-size:11px; color:rgba(255,255,255,.4); line-height:1.6; }
-.sb-btn { align-self:flex-start; background:#14161c; border:1px solid #2a2f3a; border-radius:10px; color:#e7e9ee; padding:9px 16px; font-size:13px; cursor:pointer; font-family:inherit; }
-.sb-btn:hover { border-color:var(--accent); }
-</style>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 </head>
 <body>
 <header class="topbar">
@@ -45,8 +19,8 @@
 </header>
 
 <main class="wrap">
-  <div class="sb">
-    <h2 style="margin:0;font-size:18px">Flow 沙箱 <span class="sb-note">（浏览器模拟 ct · 预览近似真机）</span></h2>
+  <div class="sb" id="panel">
+    <h2>Flow 沙箱 <span>预览 release 包 · 不等同真机</span></h2>
     <div>
       <label for="flow">Flow</label>
       <select id="flow"></select>
@@ -56,21 +30,33 @@
       <select id="entry"></select>
     </div>
     <div>
-      <label for="kvseed">KV 种子（每行 key=value，给 ct.storage.kv 用）</label>
+      <label for="kvseed">KV 种子（每行 key=value，给 ct.storage.kv 用，刷新保留）</label>
       <textarea id="kvseed" placeholder="proxy.subscription.url=https://…" spellcheck="false"></textarea>
     </div>
-    <button id="run" class="sb-btn">运行步 + 渲染 cell</button>
-    <div id="viewcell"></div>
-    <div id="out">…</div>
-    <div class="sb-note">
-      限制：net.fetch 走同步 XHR（CORS 仍然生效）；storage.kv/storage.n 是同一块内存 KV，刷新即丢；
-      signal 只记录不投递；trigger 不模拟（手动跑步）；cell 是简化渲染——真机的 UiDocument 更完整。
+    <div class="sb-row">
+      <button id="run" class="sb-btn" type="button" disabled>运行步 + 渲染</button>
+      <button id="pick" class="sb-btn secondary" type="button">打开本地 .flow</button>
+      <input id="file" type="file" accept=".flow,application/zip,.zip" hidden>
     </div>
+    <p id="ref" class="sb-ref"></p>
+    <p class="sb-kicker">脚本输出</p>
+    <div id="preview"></div>
+    <p class="sb-kicker">cell 声明</p>
+    <div id="viewcell"></div>
+    <p class="sb-kicker">日志</p>
+    <pre id="out">…</pre>
+    <p class="sb-note">
+      在线预览读的是 <code>distUrl</code> 里那个 release tag 上的源码树（与打进
+      <code>.flow</code> 的文件相同）。Release 附件没有 CORS，页面不能直接下 zip——要跑附件字节，把
+      <code>.flow</code> 拖进这里或点「打开本地 .flow」。
+      net.fetch 是同步 XHR（受 CORS 限制，响应上限 1.5MB）；storage 是内存 KV；signal 只记录；trigger 不调度。
+    </p>
   </div>
 </main>
 
 <footer class="foot">
-  <div class="wrap">Flow 沙箱 · <a href="https://github.com/flow-registry/flow-registry" target="_blank" rel="noopener">flow-registry/flow-registry</a></div>
+  <div class="wrap">Flow 沙箱 · 索引 <a href="https://github.com/flow-registry/flow-registry" target="_blank" rel="noopener">flow-registry</a> · 包 <a href="https://github.com/flow-registry/flow-package/releases" target="_blank" rel="noopener">flow-package releases</a></div>
 </footer>
 <script src="sandbox.js"></script>
-</body></html>
+</body>
+</html>

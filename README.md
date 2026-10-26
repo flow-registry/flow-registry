@@ -1,23 +1,10 @@
 # AssistBox Flow List
 
-AssistBox `.flow` 包的社区目录——结构对齐 Obsidian 社区插件
-（`community-plugins.json` + 静态浏览站）。
+AssistBox `.flow` 包的社区目录。本仓库**只放索引和静态站**，不放包源码。
 
-- **`community-flows.json`** — 注册表，唯一权威清单
-- **`flows/`** — 本仓库自托管的 flow 源码包（`manifest.yaml` + `scripts/` + `views/` + `README.md`）
-- **站点** — `index.html` 静态页（GitHub Pages），卡片网格 + ⌘K 搜索 + 详情页
-
-## 包结构
-
-一个 flow = 一个目录（分发时打包为 `xxx.flow` zip）：
-
-```
-flows/<id>/
-├── manifest.yaml        # flow 清单：trigger / context / steps
-├── scripts/*.js         # js: 步的沙箱模块（ct.tool.call / ct.context）
-├── views/*.yaml         # 可选：cell / detail 视图声明
-└── README.md            # 详情页正文
-```
+- **`community-flows.json`** — 生成的注册表（官方条目来自 flow-package 的 `catalog.json`，第三方在 `external-flows.json`）
+- **包** — [flow-registry/flow-package](https://github.com/flow-registry/flow-package) 的 GitHub Release 附件（`<id>-v<version>` / `<id>.flow`）
+- **站点** — `index.html` 目录 + `sandbox.html` 预览（GitHub Pages）
 
 ## 文档
 
@@ -29,4 +16,4 @@ flows/<id>/
 
 ## 提交
 
-见 [CONTRIBUTING.md](CONTRIBUTING.md)。
+见 [CONTRIBUTING.md](CONTRIBUTING.md)。改官方包去 flow-package；本仓库只更新索引条目。

@@ -8,20 +8,45 @@ const REGISTRY_URL = "community-flows.json";
 const state = { flows: [], sort: "name", query: "" };
 const $ = (sel) => document.querySelector(sel);
 
-function rawBase(entry) {
+function esc(s) {
+  return String(s ?? "").replace(/[&<>"']/g, (c) => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
+  }[c]));
+}
+
+function releaseTag(entry) {
+  const m = String(entry.distUrl || "").match(/\/releases\/download\/([^/]+)\//);
+  return m ? m[1] : null;
+}
+function rawBase(entry, ref) {
   const path = (entry.path || "").replace(/^\/+|\/+$/g, "");
-  return `https://raw.githubusercontent.com/${entry.repo}/HEAD/` +
+  return `https://raw.githubusercontent.com/${entry.repo}/${ref}/` +
     (path ? path + "/" : "");
 }
 function repoUrl(entry) {
+  const ref = releaseTag(entry) || "HEAD";
   return `https://github.com/${entry.repo}` +
-    (entry.path ? `/tree/HEAD/${entry.path}` : "");
+    (entry.path ? `/tree/${ref}/${entry.path}` : `/tree/${ref}`);
 }
 
 async function fetchText(url) {
   const res = await fetch(url);
-  if (!res.ok) throw new Error(`${res.status}`);
+  if (!res.ok) throw new Error(`${res.status} ${url}`);
   return res.text();
+}
+
+// Prefer the release tag pinned by distUrl. Fall back to HEAD when that
+// tag is not on the repo yet (release workflow has not run).
+async function fetchTextPinned(entry, file) {
+  const tag = releaseTag(entry);
+  const refs = tag ? [tag, "HEAD"] : ["HEAD"];
+  let last;
+  for (const ref of refs) {
+    try {
+      return { ref, fallback: tag && ref !== tag, text: await fetchText(rawBase(entry, ref) + file) };
+    } catch (e) { last = e; }
+  }
+  throw last;
 }
 
 function parseManifest(text) {
@@ -96,7 +121,9 @@ function renderGrid() {
 async function openDetail(flow) {
   $("#d-name").textContent = flow.name || flow.id;
   $("#d-meta").textContent = `${flow.author || "未知作者"} · ${flow.repo}` +
-    (flow.path ? `/${flow.path}` : "");
+    (flow.path ? `/${flow.path}` : "") +
+    (flow.version ? ` · v${flow.version}` : "");
+  $("#d-sandbox").href = `sandbox.html#flow/${encodeURIComponent(flow.id)}`;
   const tags = $("#d-tags");
   tags.textContent = "";
   for (const t of flow.tags || []) {
@@ -113,28 +140,34 @@ async function openDetail(flow) {
   $("#detail-backdrop").hidden = false;
   document.body.style.overflow = "hidden";
 
-  const base = rawBase(flow);
   try {
-    const manifest = parseManifest(await fetchText(base + "manifest.yaml"));
+    const got = await fetchTextPinned(flow, "manifest.yaml");
+    const manifest = parseManifest(got.text);
     const steps = Array.isArray(manifest.steps) ? manifest.steps : [];
     const stepNames = steps
       .map((s) => (s && s.tool ? `tool:${s.tool}` : s && s.js ? `js:${s.js}` : "?"))
       .join(" → ");
+    const dist = /^https:\/\/\S+$/.test(flow.distUrl || "") ? flow.distUrl : "";
+    const sha = /^[a-f0-9]{64}$/.test(flow.sha256 || "") ? flow.sha256 : "";
+    const refNote = got.fallback ? `${got.ref}（release tag 尚未可用）` : got.ref;
     manifestBox.innerHTML = `<table>
-      <tr><td>触发</td><td>${triggerLabel(manifest)}</td></tr>
-      <tr><td>步骤</td><td>${steps.length} 步<br><code>${stepNames}</code></td></tr>
-      <tr><td>策略</td><td><code>onStepError=${manifest.context?.onStepError ?? "—"}</code>
-        <code>maxFires=${manifest.context?.maxFires ?? "—"}</code></td></tr>
-      <tr><td>版本</td><td>${flow.version ?? "—"}${flow.minApp ? ` · 要求 app ≥ ${flow.minApp}` : ""}</td></tr>
-      ${flow.capabilities?.length ? `<tr><td>能力</td><td>${flow.capabilities.map((c) => `<code>${c}</code>`).join(" ")}</td></tr>` : ""}
-      <tr><td>安装</td><td>${flow.distUrl ? `<a href="${flow.distUrl}" target="_blank" rel="noopener">下载 .flow</a>，` : ""}放入 workspace 后
-        <code>flow.import {"path":"<file>.flow"}</code>，或直接让 Agent 导入。</td></tr>
+      <tr><td>触发</td><td>${esc(triggerLabel(manifest))}</td></tr>
+      <tr><td>步骤</td><td>${steps.length} 步<br><code>${esc(stepNames)}</code></td></tr>
+      <tr><td>策略</td><td><code>onStepError=${esc(manifest.context?.onStepError ?? "—")}</code>
+        <code>maxFires=${esc(manifest.context?.maxFires ?? "—")}</code></td></tr>
+      <tr><td>版本</td><td>${esc(flow.version ?? "—")}${flow.minApp ? ` · 要求 app ≥ ${esc(flow.minApp)}` : ""}</td></tr>
+      <tr><td>源码</td><td><code>${esc(refNote)}</code></td></tr>
+      ${flow.capabilities?.length ? `<tr><td>能力</td><td>${flow.capabilities.map((c) => `<code>${esc(c)}</code>`).join(" ")}</td></tr>` : ""}
+      <tr><td>安装</td><td>${dist ? `<a href="${esc(dist)}" target="_blank" rel="noopener">下载 .flow</a>` : "无 distUrl"}
+        ${sha ? `<br><code>${esc(sha)}</code>` : ""}
+        <br>放入 workspace 后 <code>flow.import {"path":"&lt;file&gt;.flow"}</code>，或直接让 Agent 导入。</td></tr>
     </table>`;
   } catch (e) {
     manifestBox.textContent = "manifest.yaml 读取失败：" + e.message;
   }
   try {
-    readmeBox.innerHTML = renderMarkdown(await fetchText(base + "README.md"));
+    const got = await fetchTextPinned(flow, "README.md");
+    readmeBox.innerHTML = renderMarkdown(got.text);
   } catch (_) {
     readmeBox.textContent = "";
   }

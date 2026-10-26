@@ -5,6 +5,7 @@ const errors = [];
 const seen = new Set();
 const ID = /^[a-z0-9]([a-z0-9-]{0,62})$/;
 const REPO = /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/;
+const OFFICIAL = "flow-registry/flow-package";
 
 if (!Array.isArray(entries)) {
   errors.push("registry root must be an array");
@@ -30,6 +31,18 @@ if (!Array.isArray(entries)) {
     }
     if (e.distUrl !== undefined && !/^https:\/\/\S+$/.test(e.distUrl))
       errors.push(`${where}: distUrl must be an https URL`);
+    if (e.sha256 !== undefined && !/^[a-f0-9]{64}$/.test(e.sha256))
+      errors.push(`${where}: sha256 must be 64 lowercase hex chars`);
+    if (e.repo === OFFICIAL && ID.test(e.id ?? "") && /^\d+\.\d+\.\d+$/.test(e.version ?? "")) {
+      if (e.path !== `flows/${e.id}`)
+        errors.push(`${where}: official path must be flows/${e.id}`);
+      const expectUrl =
+        `https://github.com/${OFFICIAL}/releases/download/${e.id}-v${e.version}/${e.id}.flow`;
+      if (e.distUrl !== expectUrl)
+        errors.push(`${where}: distUrl must be ${expectUrl}`);
+      if (!/^[a-f0-9]{64}$/.test(e.sha256 ?? ""))
+        errors.push(`${where}: official entry requires sha256`);
+    }
     if (e.capabilities !== undefined &&
         (!Array.isArray(e.capabilities) ||
           !e.capabilities.every((c) => /^[a-z_][a-z0-9_.]*$/.test(c))))

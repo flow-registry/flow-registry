@@ -13,8 +13,15 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - run: npm install --no-save js-yaml
+      - name: Checkout flow-package catalog
+        id: pkg
+        continue-on-error: true
+        uses: actions/checkout@v4
+        with:
+          repository: flow-registry/flow-package
+          path: .cache/flow-package
       - name: Validate community-flows.json
         run: node .github/scripts/validate-registry.mjs
-      - name: Validate hosted flow manifests
-        run: node .github/scripts/validate-flows.mjs
+      - name: Official entries match the package catalog
+        if: steps.pkg.outcome == 'success'
+        run: node .github/scripts/sync-index.mjs --check .cache/flow-package/catalog.json
