@@ -1,5 +1,7 @@
 # manifest.yaml 参考
 
+> 字段级参考。格式级规范（zip 布局、界值、指纹、物化语义、`vendor/` 槽位）的单一事实源是 [flow-package/spec/FLOW_FORMAT.md](https://github.com/flow-registry/flow-package/blob/main/spec/FLOW_FORMAT.md)；两处冲突以它为准。
+
 `.flow` 包的根清单。一个最小例子：
 
 ```yaml

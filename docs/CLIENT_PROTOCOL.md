@@ -24,6 +24,7 @@ flow.import → manifest 校验 + automator 注册 + cell/detail 投影
 ## 关键点
 
 - **base URL 是目录根**，不是 index 完整路径——客户端拼 `<base>/community-flows.json`
+- `type: "vendor"` 条目与 flow 条目走**同一条拉取/校验路径**（distUrl + sha256 + 首抓摘要），区别只在消费侧：vendor 产物经 `vendor.lock`/`uses:` 进 `.flow`，不是 `flow.import` 的直接目标
 - `distUrl` 缺省时 fallback `<base>/dist/<id>.flow`。官方索引总是写明 release 直链，不依赖这个 fallback
 - 官方包 tag 形如 `<id>-v<version>`，asset 名 `<id>.flow`。tag 一旦发出去字节就不变
 - `net.fetch` 是 workspace-jailed 有界 GET（`MAX_FETCH_BYTES` 上限、禁止凭证头、重定向限 10 次、非 http(s) 拒绝）

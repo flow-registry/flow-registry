@@ -17,6 +17,9 @@
 | `distUrl` | string | | `.flow` zip 的 https 直链。官方包必须是 `https://github.com/flow-registry/flow-package/releases/download/<id>-v<version>/<id>.flow`。缺省时客户端拼 `<base>/dist/<id>.flow`（本站不再提供这个目录） |
 | `sha256` | string | | dist 的 sha256（64 位小写 hex）。官方包必填；有则客户端校验，无则按未固定源处理 |
 | `seed` | bool | | 预装候选标记（客户端是否消费看实现） |
+| `type` | string | | 产物类型：`flow`（缺省）或 `vendor`。`vendor` 条目的 `distUrl` 指向 vendored 库产物，消费语义见 flow-vendor 的 `spec/VENDOR_FORMAT.md` |
+| `vendor_lock` | object/string | | `type:"vendor"` 时携带：`vendor.lock` 条目内容或引用（name/version/entry_sha256/builder/provenance/collection/channel） |
+| `vulnerable` | string[] | | `type:"vendor"` 时可追加：OSV/CVE 标记。追加不改包字节；客户端按来源策略告警或拒装 |
 
 官方包的 zip **不在本仓库、也不在 Pages 的 `dist/`**。字节只存在于 flow-package 的 Release，tag 不可变。
 
